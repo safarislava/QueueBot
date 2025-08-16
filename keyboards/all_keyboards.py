@@ -5,7 +5,7 @@ from entity.callback import AgreementCallback
 from controllers.queue import queue
 from create_bot import admins
 
-def main_keyboard(user_id: int):
+def main_keyboard(user_id: int) -> ReplyKeyboardMarkup:
     keyboard_list = [
         [KeyboardButton(text="Показать очередь")],
         [KeyboardButton(text="Записаться в конец очереди")],
@@ -17,7 +17,7 @@ def main_keyboard(user_id: int):
     keyboard = ReplyKeyboardMarkup(keyboard=keyboard_list, resize_keyboard=True, one_time_keyboard=True)
     return keyboard
 
-def choose_groupmate_keyboard():
+def choose_groupmate_keyboard() -> ReplyKeyboardMarkup:
     keyboard_list = []
     for line in queue.show().split('\n'):
         keyboard_list.append([KeyboardButton(text=line)])
@@ -25,7 +25,7 @@ def choose_groupmate_keyboard():
     keyboard = ReplyKeyboardMarkup(keyboard=keyboard_list, resize_keyboard=True, one_time_keyboard=True)
     return keyboard
 
-def agreement_keyboard(user_id: int):
+def agreement_keyboard(user_id: int) -> InlineKeyboardMarkup:
     agree_callback = AgreementCallback(name="swap", agree=True, source_id=user_id).pack()
     disagree_callback = AgreementCallback(name="swap", agree=False, source_id=user_id).pack()
 

@@ -7,7 +7,7 @@ class UserController:
         self.users[1076509512] = User(1076509512, "safarislava")
         self.users[7229159786] = User(7229159786, "Алёна")
 
-    def add(self, user):
+    def add(self, user: User) -> None:
         if not user.id in self.users.keys():
             self.users[user.id] = user
 

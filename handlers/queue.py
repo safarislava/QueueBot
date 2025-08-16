@@ -12,11 +12,11 @@ from keyboards.all_keyboards import main_keyboard, choose_groupmate_keyboard, ag
 queue_router = Router()
 
 @queue_router.message(F.text == "Показать очередь")
-async def show(message: Message):
+async def show(message: Message) -> None:
     await message.answer(queue.show(), reply_markup=main_keyboard(message.from_user.id))
 
 @queue_router.message(StateFilter(None), F.text == "Записаться в конец очереди")
-async def append(message: Message, state: FSMContext):
+async def append(message: Message, state: FSMContext) -> None:
     if queue.exist(message.from_user.id):
         await message.answer("Напишите: \"ПОДТВЕРЖАЮ\"", reply_markup=None)
         await state.set_state(VerificationAppend.verification)
@@ -25,7 +25,7 @@ async def append(message: Message, state: FSMContext):
         await message.answer(queue.show(), reply_markup=main_keyboard(message.from_user.id))
 
 @queue_router.message(VerificationAppend.verification)
-async def append_verify(message: Message, state: FSMContext):
+async def append_verify(message: Message, state: FSMContext) -> None:
     if message.text == "ПОДТВЕРЖАЮ":
         queue.append(message.from_user.id)
     else:
@@ -34,12 +34,12 @@ async def append_verify(message: Message, state: FSMContext):
     await state.clear()
 
 @queue_router.message(StateFilter(None), F.text == "Предложить обмен")
-async def swap_choosing(message: Message, state: FSMContext):
+async def swap_choosing(message: Message, state: FSMContext) -> None:
     await message.answer("Выбери с кем хочешь поменяться:", reply_markup=choose_groupmate_keyboard())
     await state.set_state(OrderSwap.choosing_groupmate)
 
 @queue_router.message(OrderSwap.choosing_groupmate)
-async def swap(message: Message, state: FSMContext):
+async def swap(message: Message, state: FSMContext) -> None:
     # error = False
     # if not message.text in queue.show().split("\n"):
     #     error = True
@@ -53,7 +53,7 @@ async def swap(message: Message, state: FSMContext):
     await state.clear()
 
 @queue_router.callback_query(AgreementCallback.filter(F.name == "swap"))
-async def agreement_callback(query: CallbackQuery, callback_data: AgreementCallback):
+async def agreement_callback(query: CallbackQuery, callback_data: AgreementCallback) -> None:
     name = user_controller.users.get(query.from_user.id).name
     if callback_data.agree:
         queue.swap(callback_data.source_id, query.from_user.id)

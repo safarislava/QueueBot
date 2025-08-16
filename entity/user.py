@@ -1,8 +1,8 @@
 class User:
-    id = -1
-    name = ""
+    id: int
+    name: str
 
-    def __init__(self, id, name):
+    def __init__(self, id: int, name: str):
         self.id = id
         self.name = name
 
