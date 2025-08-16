@@ -1,5 +1,5 @@
 class User:
-    id = ""
+    id = -1
     name = ""
 
     def __init__(self, id, name):
