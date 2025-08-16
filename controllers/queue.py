@@ -4,14 +4,13 @@ class Queue:
     value = []
     count = 0
 
-    def __init__(self):
-        self.append(100)
-        self.append(300)
-
     def exist(self, id: int) -> bool:
         return id in self.value
 
     def show(self) -> str:
+        if len(self.value) == 0:
+            return "Очередь пуста"
+
         users = [user_controller.get_user_by_int(i).name for i in self.value]
 
         text = ""

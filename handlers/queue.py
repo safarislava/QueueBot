@@ -2,6 +2,8 @@ from aiogram import Router, F
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
+
+
 from controllers.queue import queue
 from controllers.user import user_controller
 from create_bot import bot
@@ -26,7 +28,7 @@ async def append(message: Message, state: FSMContext) -> None:
 
 @queue_router.message(VerificationAppend.verification)
 async def append_verify(message: Message, state: FSMContext) -> None:
-    if message.text == "ПОДТВЕРЖАЮ":
+    if message.text == "ПОДТВЕРЖДАЮ":
         queue.append(message.from_user.id)
     else:
         await message.answer("Не подтверждено")
@@ -35,6 +37,10 @@ async def append_verify(message: Message, state: FSMContext) -> None:
 
 @queue_router.message(StateFilter(None), F.text == "Предложить обмен")
 async def swap_choosing(message: Message, state: FSMContext) -> None:
+    if len(queue.value) == 0:
+        await message.answer("Очередь пуста", reply_markup=main_keyboard(message.from_user.id))
+        return
+
     await message.answer("Выбери с кем хочешь поменяться:", reply_markup=choose_groupmate_keyboard())
     await state.set_state(OrderSwap.choosing_groupmate)
 
@@ -57,9 +63,9 @@ async def agreement_callback(query: CallbackQuery, callback_data: AgreementCallb
     name = user_controller.users.get(query.from_user.id).name
     if callback_data.agree:
         queue.swap(callback_data.source_id, query.from_user.id)
-        await bot.send_message(chat_id=callback_data.source_id, text=f"Обмене с {name} произошёл успешно")
+        await bot.send_message(chat_id=callback_data.source_id, text=f"Обмен с {name} произошёл успешно")
     else:
-        await bot.send_message(chat_id=callback_data.source_id, text=f"В обмене с {name} отказано")
+        await bot.send_message(chat_id=callback_data.source_id, text=f"Обмен с {name} отклонён")
 
     await query.message.delete()
     await query.answer(text="Готово")
