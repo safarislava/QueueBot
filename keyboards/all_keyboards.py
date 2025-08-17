@@ -2,7 +2,7 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from entity.callback import AgreementCallback
-from controllers.queue import queue
+from controllers.queue_manager import queue_manager
 from create_bot import admins
 
 def main_keyboard(user_id: int) -> ReplyKeyboardMarkup:
@@ -14,12 +14,12 @@ def main_keyboard(user_id: int) -> ReplyKeyboardMarkup:
     if user_id in admins:
         keyboard_list.append([KeyboardButton(text="Админ панель")])
 
-    keyboard = ReplyKeyboardMarkup(keyboard=keyboard_list, resize_keyboard=True, one_time_keyboard=True)
+    keyboard = ReplyKeyboardMarkup(keyboard=keyboard_list, resize_keyboard=True)
     return keyboard
 
 def choose_groupmate_keyboard() -> ReplyKeyboardMarkup:
     keyboard_list = []
-    for line in queue.show().split('\n'):
+    for line in queue_manager.get_queue().show().split('\n'):
         keyboard_list.append([KeyboardButton(text=line)])
 
     keyboard = ReplyKeyboardMarkup(keyboard=keyboard_list, resize_keyboard=True, one_time_keyboard=True)
@@ -33,4 +33,11 @@ def agreement_keyboard(user_id: int) -> InlineKeyboardMarkup:
                       InlineKeyboardButton(text="Нет", callback_data=disagree_callback)]]
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard_list)
+    return keyboard
+
+def admin_keyboard() -> ReplyKeyboardMarkup:
+    keyboard_list = [[KeyboardButton(text="Сохранить"), KeyboardButton(text="Загрузить")],
+                     [KeyboardButton(text="Показать очереди")],
+                     [KeyboardButton(text="Задать предмет")]]
+    keyboard = ReplyKeyboardMarkup(keyboard=keyboard_list, resize_keyboard=True, one_time_keyboard=True)
     return keyboard

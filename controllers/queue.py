@@ -1,8 +1,12 @@
 from controllers.user import user_controller
 
 class Queue:
-    value = []
-    count = 0
+    value: list
+    count: int
+
+    def __init__(self, value, count):
+        self.value = value
+        self.count = count
 
     def exist(self, id: int) -> bool:
         return id in self.value
@@ -27,5 +31,3 @@ class Queue:
         first_index = self.value.index(first_id)
         second_index = self.value.index(second_id)
         self.value[first_index], self.value[second_index] = self.value[second_index], self.value[first_index]
-
-queue = Queue()

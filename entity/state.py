@@ -9,3 +9,6 @@ class VerificationAppend(StatesGroup):
 
 class Registration(StatesGroup):
     registration = State()
+
+class SetQueue(StatesGroup):
+    setting = State()
